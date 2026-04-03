@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://ddfropcisjpj7"]
+
+[ext_resource type="Script" uid="uid://b06mdvt83l45n" path="res://leader_ai.gd" id="1_sakpf"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5h3e8"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_67g6c"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_w6a2p"]
+size = Vector3(0.8, 0.2, 0.2)
+
+[node name="LeaderAI" type="CharacterBody3D" unique_id=1629065869 groups=["teacher"]]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 0)
+script = ExtResource("1_sakpf")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1410794081]
+shape = SubResource("CapsuleShape3D_5h3e8")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1373113848]
+mesh = SubResource("CapsuleMesh_67g6c")
+
+[node name="Face" type="MeshInstance3D" parent="." unique_id=1127908224]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.446, -0.6)
+mesh = SubResource("BoxMesh_w6a2p")
+
+[node name="VisionRay" type="RayCast3D" parent="." unique_id=816879075]
+collision_mask = 5
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=525009637]

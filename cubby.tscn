@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://sg7yovhqe4q0"]
+
+[ext_resource type="Texture2D" uid="uid://7cvgt5sugm1k" path="res://assets/cubby.png" id="1_eridd"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_desdh"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jxcak"]
+albedo_texture = ExtResource("1_eridd")
+uv1_scale = Vector3(3, 2.025, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_26dhr"]
+material = SubResource("StandardMaterial3D_jxcak")
+size = Vector3(9, 3, 2)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_eridd"]
+size = Vector3(9, 3, 2)
+
+[node name="Cubby" type="StaticBody3D" unique_id=895013265]
+collision_layer = 4
+physics_material_override = SubResource("PhysicsMaterial_desdh")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1233067551]
+mesh = SubResource("BoxMesh_26dhr")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1994952671]
+shape = SubResource("BoxShape3D_eridd")

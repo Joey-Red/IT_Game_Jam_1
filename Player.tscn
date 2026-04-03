@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://cdrao483x32dt"]
+
+[ext_resource type="Script" uid="uid://covoju2sxw2wg" path="res://player.gd" id="1_xhfnw"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kpjcp"]
+
+[node name="Player" type="CharacterBody3D" unique_id=1501985437]
+collision_layer = 5
+collision_mask = 7
+script = ExtResource("1_xhfnw")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=332315729]
+shape = SubResource("CapsuleShape3D_kpjcp")
+
+[node name="Head" type="Node3D" parent="." unique_id=1891150469]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head" unique_id=247749347]
+
+[node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D" unique_id=559711384]
+target_position = Vector3(0, 0, -2.5)
+collision_mask = 6
+
+[node name="HUD" type="CanvasLayer" parent="." unique_id=713972075]
+
+[node name="CenterContainer" type="CenterContainer" parent="HUD" unique_id=1011993855]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ColorRect" type="ColorRect" parent="HUD/CenterContainer" unique_id=1279981487]
+custom_minimum_size = Vector2(4, 4)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="ScoreLabel" type="Label" parent="HUD" unique_id=1575563316]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TimerLabel" type="Label" parent="HUD" unique_id=1003738999]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 1
+
+[node name="InventoryLabel" type="Label" parent="HUD" unique_id=1193319662]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+horizontal_alignment = 2
+vertical_alignment = 2
