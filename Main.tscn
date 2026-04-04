@@ -19,7 +19,6 @@ sky = SubResource("Sky_uu6xs")
 tonemap_mode = 2
 
 [node name="Main" type="Node3D" unique_id=1293610237]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.0353584, 0)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2131121114]
 environment = SubResource("Environment_r0du0")
@@ -30,55 +29,54 @@ transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545
 [node name="Map" type="Node" parent="." unique_id=270111185]
 
 [node name="Player" parent="." unique_id=1501985437 instance=ExtResource("1_glv2v")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -3.882611, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.154715, 1.1995444, 2.066218)
 
 [node name="Blocks" type="Node" parent="." unique_id=77482244]
 
 [node name="Block" parent="Blocks" unique_id=456510000 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.7145102, -0.5756974, -1.8131685)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.279681, 0.32128918, 5.302891)
 
 [node name="Block2" parent="Blocks" unique_id=450041289 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.867144, -0.5756974, -1.8386345)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.127048, 0.32827806, 5.277425)
 
 [node name="Block7" parent="Blocks" unique_id=876264100 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(0.6742379, 0, 0.7385142, 0, 1, 0, -0.7385142, 0, 0.6742379, 2.867144, -0.07569742, -1.8386345)
+transform = Transform3D(0.6742379, 0, 0.7385142, 0, 1, 0, -0.7385142, 0, 0.6742379, -11.127048, 0.5779806, 5.277425)
 
 [node name="Block8" parent="Blocks" unique_id=1850813813 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(0.6742379, 0, 0.7385142, 0, 1, 0, -0.7385142, 0, 0.6742379, 1.6999843, -0.07569742, -1.8386345)
+transform = Transform3D(0.6742379, 0, 0.7385142, 0, 1, 0, -0.7385142, 0, 0.6742379, -12.294208, 0.5776612, 5.277425)
 
 [node name="Block9" parent="Blocks" unique_id=1128853174 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(0.95301104, 0, 0.30293545, 0, 1, 0, -0.30293545, 0, 0.95301104, 1.6999843, 0.42430246, -1.8386345)
+transform = Transform3D(0.95301104, 0, 0.30293545, 0, 1, 0, -0.30293545, 0, 0.95301104, -12.294208, 0.823918, 5.277425)
 
 [node name="Block3" parent="Blocks" unique_id=1584094510 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.106838, -0.5756973, -0.9959192)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.887354, 0.32955348, 6.12014)
 
 [node name="Block4" parent="Blocks" unique_id=301595248 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(0.42141572, 0, -0.90686756, 0, 1, 0, 0.90686756, 0, 0.42141572, 2.106838, -0.07569742, -0.9959192)
+transform = Transform3D(0.42141572, 0, -0.90686756, 0, 1, 0, 0.90686756, 0, 0.42141572, -11.887354, 0.5831362, 6.12014)
 
 [node name="Block5" parent="Blocks" unique_id=1454997373 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(0.1787507, 0, 0.9838944, 0, 1, 0, -0.9838944, 0, 0.1787507, 2.106838, 0.42430246, -0.9959192)
+transform = Transform3D(0.1787507, 0, 0.9838944, 0, 1, 0, -0.9838944, 0, 0.1787507, -11.887354, 0.8391049, 6.12014)
 
 [node name="Block6" parent="Blocks" unique_id=830373806 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(0.87639076, 0, 0.4816007, 0, 1, 0, -0.4816007, 0, 0.87639076, 2.106838, 0.9243022, -0.9959192)
+transform = Transform3D(0.87639076, 0, 0.4816007, 0, 1, 0, -0.4816007, 0, 0.87639076, -11.887354, 1.0997474, 6.12014)
 
 [node name="BuildZones" type="Node" parent="." unique_id=1493152726]
 
 [node name="BuildZone2" type="Marker3D" parent="BuildZones" unique_id=1460592652 groups=["build_zones"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3754394, 0.52035093, -4.1144934)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.92004, 0.5347916, 2.7450247)
 
 [node name="BuildZone3" type="Marker3D" parent="BuildZones" unique_id=1392154332 groups=["build_zones"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3647027, 0.52035093, -3.1221185)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.142622, 0.5347916, 3.7373996)
 
 [node name="AI_KIDS" type="Node" parent="." unique_id=534920871]
 
 [node name="KidAI" parent="AI_KIDS" unique_id=2049064512 instance=ExtResource("6_3dxm6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4880724, 0.0010843277, -0.22579288)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.8083324, 1.1995444, 4.2777624)
 
 [node name="KidAI3" parent="AI_KIDS" unique_id=1675625798 instance=ExtResource("6_3dxm6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.451005, 0.0010843277, -2.7298872)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.869255, 1.1995445, 1.7736683)
 
 [node name="LeaderAI" parent="." unique_id=1629065869 instance=ExtResource("7_lgr22")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.5647545, -4.1022444, 0.98351157)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.8725176, 1.0393022, -1.6595793)
 
 [node name="Room" parent="." unique_id=1411896095 instance=ExtResource("5_fos0i")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5.066722, -9.014042)

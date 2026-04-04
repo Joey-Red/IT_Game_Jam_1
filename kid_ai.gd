@@ -112,7 +112,7 @@ func find_nearest_zone() -> void:
 		nav_agent.target_position = claimed_zone.global_position
 		current_state = State.MOVING_TO_ZONE
 
-func calculate_movement(delta: float) -> void:
+func calculate_movement(_delta: float) -> void:
 	if current_state == State.MOVING_TO_BLOCK:
 		if not is_instance_valid(target_block):
 			current_state = State.FINDING_BLOCK
@@ -231,5 +231,5 @@ func start_crying() -> void:
 	velocity.z = 0
 	get_tree().call_group("teacher", "investigate_crying", global_position)
 
-func crying_behavior(delta: float) -> void:
+func crying_behavior(_delta: float) -> void:
 	rotation.z = sin(Time.get_ticks_msec() * 0.03) * 0.2
