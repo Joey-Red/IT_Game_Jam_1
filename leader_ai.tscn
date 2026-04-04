@@ -108,6 +108,7 @@ bind/22/pose = Transform3D(-0.99999976, -6.612488e-08, -1.2479299e-07, 1.3732279
 
 [node name="LeaderAI" type="CharacterBody3D" unique_id=1629065869 groups=["teacher"]]
 script = ExtResource("1_sakpf")
+base_patrol_speed = 1.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1410794081]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.37274206, 0)
