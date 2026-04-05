@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://b06mdvt83l45n" path="res://leader_ai.gd" id="1_sakpf"]
 [ext_resource type="Texture2D" uid="uid://ceurlo73glfd8" path="res://assets/secretary_tex.png" id="2_5h3e8"]
+[ext_resource type="AudioStream" uid="uid://cmj5svjv803dn" path="res://assets/step.wav" id="3_67g6c"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_5h3e8"]
 radius = 0.35
@@ -109,6 +110,7 @@ bind/22/pose = Transform3D(-0.99999976, -6.612488e-08, -1.2479299e-07, 1.3732279
 [node name="LeaderAI" type="CharacterBody3D" unique_id=1629065869 groups=["teacher"]]
 script = ExtResource("1_sakpf")
 base_patrol_speed = 1.0
+base_chase_speed = 3.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1410794081]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.37274206, 0)
@@ -323,3 +325,9 @@ bones/27/scale = Vector3(1, 1, 1)
 [node name="character_secretary" type="MeshInstance3D" parent="Armature/Skeleton3D" unique_id=493755581]
 mesh = SubResource("ArrayMesh_5h3e8")
 skin = SubResource("Skin_67g6c")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=1035231144]
+
+[node name="FootstepPlayer" type="AudioStreamPlayer3D" parent="." unique_id=103432356]
+stream = ExtResource("3_67g6c")
+volume_db = -15.0

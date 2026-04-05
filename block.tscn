@@ -1,5 +1,8 @@
 [gd_scene format=3 uid="uid://bwprnvkmw72g8"]
 
+[ext_resource type="Script" uid="uid://dg43utr5srcu4" path="res://block.gd" id="1_im0tn"]
+[ext_resource type="AudioStream" uid="uid://n2h6kvntoxfs" path="res://assets/clack.wav" id="2_xfwl5"]
+
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_qncar"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_qncar"]
@@ -12,9 +15,16 @@ size = Vector3(0.25, 0.25, 0.25)
 collision_layer = 2
 collision_mask = 3
 physics_material_override = SubResource("PhysicsMaterial_qncar")
+contact_monitor = true
+max_contacts_reported = 1
+script = ExtResource("1_im0tn")
+clack_sound = ExtResource("2_xfwl5")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=434593384]
 mesh = SubResource("BoxMesh_qncar")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1345900925]
 shape = SubResource("BoxShape3D_im0tn")
+
+[node name="ClackPlayer" type="AudioStreamPlayer" parent="." unique_id=807720997]
+stream = ExtResource("2_xfwl5")

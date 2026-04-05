@@ -17,14 +17,24 @@ extends CharacterBody3D
 @export var suspicion_build_rate: float = 20.0
 @export var suspicion_decay_rate: float = 15.0
 @export var active_steal_penalty: float = 40.0
+@export_category("Audio Settings")
+@export var audio_folder: String = "res://assets/" # Change to match your project structure
+@onready var voice_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
+@onready var footstep_player: AudioStreamPlayer3D = $FootstepPlayer
+var footstep_timer: float = 0.0
+const FOOTSTEP_INTERVAL: float = 0.4 # Adjust based on animation/speed
 
+
+var voice_timer: float = 0.0
+const VOICE_INTERVAL: float = 5.0
+var _last_state: State = State.PATROL
 # State tracking for stealth mechanics
 var current_suspicion: float = 0.0
 var previous_player_blocks: int = 0
 var patrol_speed: float = base_patrol_speed
 var chase_speed: float = base_chase_speed
 var vision_range: float = base_vision_range
-@export var debug_mode: bool = true 
+@export var debug_mode: bool = false 
 
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var vision_ray: RayCast3D = $VisionRay
@@ -72,8 +82,30 @@ func setup_debug_laser() -> void:
 	
 	debug_laser.mesh = cylinder
 	vision_ray.add_child(debug_laser)
-	
+
+func handle_footsteps(delta: float) -> void:
+	# Only play footsteps if grounded and moving
+	if is_on_floor() and velocity.length() > 0.2:
+		footstep_timer -= delta
+		if footstep_timer <= 0.0:
+			footstep_player.pitch_scale = randf_range(0.9, 1.1)
+			footstep_player.play()
+			
+			# Speed up footsteps if chasing (For leader)
+			var current_interval = FOOTSTEP_INTERVAL
+			if "chase_speed" in self and velocity.length() > (patrol_speed + 0.5):
+				current_interval = FOOTSTEP_INTERVAL * 0.6
+				
+			footstep_timer = current_interval
+	else:
+		footstep_timer = 0.0
+
 func _physics_process(delta: float) -> void:
+	if not GameManager.is_game_active:
+		if not is_on_floor():
+			velocity.y -= gravity * delta
+			move_and_slide()
+		return
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 
@@ -93,6 +125,44 @@ func _physics_process(delta: float) -> void:
 		chase_speed = clamp(base_chase_speed + (float(GameManager.score) / 500.0), base_chase_speed, max_chase_speed)
 		vision_range = base_vision_range + (float(GameManager.score) / 200.0)
 
+	#if current_state != _last_state:
+		#_last_state = current_state
+		#play_state_voice(current_state)
+		#voice_timer = VOICE_INTERVAL
+	#else:
+		#voice_timer -= delta
+		#if voice_timer <= 0.0:
+			#play_state_voice(current_state)
+			#voice_timer = VOICE_INTERVAL
+	# --- Audio State Management ---
+	if current_state != _last_state:
+		_last_state = current_state
+		play_state_voice(current_state)
+		voice_timer = VOICE_INTERVAL
+		
+		# --- NEW: Tell GameManager if we started or stopped chasing ---
+		if current_state == State.CHASE:
+			GameManager.set_chase_state(true)
+		else:
+			# If transitioning back to PATROL or INVESTIGATE, stop chase music
+			GameManager.set_chase_state(false)
+			
+	else:
+		voice_timer -= delta
+		if voice_timer <= 0.0:
+			play_state_voice(current_state)
+			voice_timer = VOICE_INTERVAL
+
+	match current_state:
+		State.PATROL:
+			handle_patrol(delta)
+		State.INVESTIGATE:
+			move_towards_target(delta)
+			if nav_agent.is_navigation_finished():
+				current_state = State.PATROL
+		State.CHASE:
+			move_towards_target(delta)
+			check_if_caught_player()
 	match current_state:
 		State.IDLE:
 			handle_idle(delta)
@@ -105,7 +175,35 @@ func _physics_process(delta: float) -> void:
 			move_towards_target(delta)
 			check_if_caught_player()
 
-	move_and_slide()
+	#move_and_slide()
+	handle_footsteps(delta)
+	
+	# Kids use _on_safe_velocity_computed for actual movement, but handle_footsteps 
+	# uses the velocity vector which is tracked accurately in both setups.
+	if not "nav_agent" in self or not nav_agent.avoidance_enabled:
+		move_and_slide()
+
+
+func play_state_voice(state: State) -> void:
+	# NEW: Abort if audio is already playing to prevent overlap
+	if voice_player.is_playing():
+		return
+		
+	# Convert enum integer to string (e.g., 0 -> "patrol")
+	var state_name: String = State.keys()[state].to_lower()
+	
+	# Possible file suffixes
+	var suffixes: Array[String] = ["", "2", "3"]
+	var chosen_suffix: String = suffixes.pick_random()
+	
+	var audio_path: String = audio_folder + state_name + chosen_suffix + ".mp3"
+	
+	if ResourceLoader.exists(audio_path):
+		var stream: AudioStream = load(audio_path)
+		voice_player.stream = stream
+		voice_player.play()
+	else:
+		push_warning("LeaderAI: Audio file not found at path: " + audio_path)
 
 # --- Suspicion Logic ---
 func handle_suspicion_logic(delta: float) -> void:

@@ -1,8 +1,14 @@
 [gd_scene format=4 uid="uid://cdrao483x32dt"]
 
 [ext_resource type="Script" uid="uid://covoju2sxw2wg" path="res://player.gd" id="1_xhfnw"]
+[ext_resource type="AudioStream" uid="uid://8ru6ktpe4bod" path="res://assets/pick up.wav" id="2_cxr5p"]
+[ext_resource type="AudioStream" uid="uid://n2h6kvntoxfs" path="res://assets/clack.wav" id="2_kpjcp"]
+[ext_resource type="AudioStream" uid="uid://cmj5svjv803dn" path="res://assets/step.wav" id="3_tdg3f"]
+[ext_resource type="AudioStream" uid="uid://dsh8nwvjmiacc" path="res://assets/land.mp3" id="4_dtqjt"]
+[ext_resource type="Texture2D" uid="uid://wh3y7xire2e7" path="res://assets/thumbnail.png" id="5_tdg3f"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_kpjcp"]
+height = 1.315
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jijef"]
 resource_name = "mat1"
@@ -270,12 +276,17 @@ shadow_mesh = SubResource("ArrayMesh_nxytl")
 collision_layer = 5
 collision_mask = 7
 script = ExtResource("1_xhfnw")
+sfx_pickup = ExtResource("2_cxr5p")
+sfx_deposit = ExtResource("2_cxr5p")
+sfx_jump = ExtResource("3_tdg3f")
+sfx_land = ExtResource("4_dtqjt")
+sfx_footstep = ExtResource("3_tdg3f")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=332315729]
 shape = SubResource("CapsuleShape3D_kpjcp")
 
 [node name="Head" type="Node3D" parent="." unique_id=1891150469]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, -0.28665596)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.39391494, -0.28665596)
 
 [node name="Camera3D" type="Camera3D" parent="Head" unique_id=247749347]
 
@@ -322,7 +333,107 @@ grow_vertical = 2
 horizontal_alignment = 2
 vertical_alignment = 2
 
+[node name="StartScreen" type="TextureRect" parent="HUD" unique_id=1746829822]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_tdg3f")
+expand_mode = 3
+
+[node name="PlayButton" type="Button" parent="HUD/StartScreen" unique_id=1905132285]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -23.5
+offset_top = -15.5
+offset_right = 23.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "PLAY"
+
+[node name="GameOverScreen" type="TextureRect" parent="HUD" unique_id=654264848]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_tdg3f")
+expand_mode = 3
+
+[node name="PlayAgainButton" type="Button" parent="HUD/GameOverScreen" unique_id=1518509542]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -23.5
+offset_top = -15.5
+offset_right = 23.5
+offset_bottom = 15.5
+grow_horizontal = 2
+grow_vertical = 2
+text = "PLAY AGAIN"
+
+[node name="FinalScoreLabel" type="Label" parent="HUD/GameOverScreen" unique_id=1264981091]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Final Score:"
+horizontal_alignment = 1
+
+[node name="ColorRect2" type="ColorRect" parent="HUD" unique_id=227430053]
+custom_minimum_size = Vector2(4, 4)
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -200.00421
+offset_right = 222.0
+grow_vertical = 0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+mouse_filter = 2
+color = Color(0, 0, 0, 0.7019608)
+
+[node name="Controls" type="Label" parent="HUD/ColorRect2" unique_id=542589141]
+layout_mode = 1
+anchors_preset = -1
+offset_left = -59.0
+offset_top = -2.9957886
+offset_right = 283.0
+offset_bottom = 254.00421
+text = "Movement: WASD
+Crouch: CTRL
+Sprint: SHIFT
+Pick up/Deposit Blocks: E
+
+Steal the blocks,
+put them in your backpack.
+Faster = More points
+
+"
+horizontal_alignment = 1
+
 [node name="group178796802" type="MeshInstance3D" parent="." unique_id=687009711]
-transform = Transform3D(0.72657466, 0, -0.6870875, 0, 1, 0, 0.6870875, 0, 0.72657466, 0, 0, 0)
+transform = Transform3D(0.544931, 0, -0.5153156, 0, 0.75, 0, 0.5153156, 0, 0.544931, 0, 0, 0)
 mesh = SubResource("ArrayMesh_xhfnw")
 skeleton = NodePath("")
+
+[node name="SFXPlayer" type="AudioStreamPlayer" parent="." unique_id=1500802297]
+stream = ExtResource("2_kpjcp")
+
+[node name="MovementPlayer" type="AudioStreamPlayer" parent="." unique_id=911054877]
+stream = ExtResource("2_kpjcp")
+
+[node name="FootstepPlayer" type="AudioStreamPlayer" parent="." unique_id=778063575]
+stream = ExtResource("2_kpjcp")
+volume_db = -12.0

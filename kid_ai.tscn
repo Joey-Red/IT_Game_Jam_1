@@ -2,8 +2,10 @@
 
 [ext_resource type="Script" uid="uid://il4vy26w0uve" path="res://kid_ai.gd" id="1_4shl8"]
 [ext_resource type="PackedScene" uid="uid://bwprnvkmw72g8" path="res://block.tscn" id="2_aj6k7"]
+[ext_resource type="AudioStream" uid="uid://cmj5svjv803dn" path="res://assets/step.wav" id="3_bs0oq"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_aj6k7"]
+height = 1.385
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ontmj"]
 resource_name = "Skin"
@@ -10960,14 +10962,17 @@ _data = {
 &"CharacterArmature|Wave": SubResource("Animation_eb0gi")
 }
 
-[node name="KidAI" type="CharacterBody3D" unique_id=2049064512]
+[node name="KidAI" type="CharacterBody3D" unique_id=2049064512 groups=["kids"]]
 collision_mask = 7
 script = ExtResource("1_4shl8")
+move_speed = 2.0
 block_scene = ExtResource("2_aj6k7")
+block_size = 0.25
 
 [node name="NavigationAgent3D" type="NavigationAgent3D" parent="." unique_id=383623202]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1763841205]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.21676421, 0)
 shape = SubResource("CapsuleShape3D_aj6k7")
 
 [node name="RootNode" type="Node3D" parent="." unique_id=1973241957]
@@ -10977,6 +10982,7 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, -
 transform = Transform3D(100, 0, 0, 0, -1.1920931e-05, 100, 0, -100, -1.1920931e-05, 0, 0, 0)
 
 [node name="Skeleton3D" type="Skeleton3D" parent="RootNode/CharacterArmature" unique_id=945784716]
+transform = Transform3D(0.75, 0, 0, 0, 0.75, 0, 0, 0, 0.75, 0, 0, 0)
 bones/0/name = "Root"
 bones/0/parent = -1
 bones/0/rest = Transform3D(1, 0, 0, 0, -1.192093e-07, -1, 0, 1, -1.192093e-07, 0, -0.0007228865, 0)
@@ -11566,3 +11572,10 @@ skin = SubResource("Skin_bs0oq")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=205181910]
 libraries/ = SubResource("AnimationLibrary_uicli")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="." unique_id=208156224]
+
+[node name="FootstepPlayer" type="AudioStreamPlayer3D" parent="." unique_id=1859532607]
+stream = ExtResource("3_bs0oq")
+volume_db = -40.0
+pitch_scale = 3.1

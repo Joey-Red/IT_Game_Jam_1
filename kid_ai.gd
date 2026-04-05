@@ -1,9 +1,43 @@
 extends CharacterBody3D
-
+@onready var footstep_player: AudioStreamPlayer3D = $FootstepPlayer
+var footstep_timer: float = 0.0
+const FOOTSTEP_INTERVAL: float = 0.4 # Adjust based on animation/speed
 @export var move_speed: float = 3.0
 @export var block_scene: PackedScene 
 
+@export_category("Building Logic")
+enum BuildStyle { TOWER, PYRAMID, WALL }
+@export var build_style: BuildStyle = BuildStyle.TOWER
+@export var block_size: float = 1.0 # Adjust this to match your actual block mesh size (e.g., 0.5 or 1.0)
+@export_category("Audio Settings")
+@export var audio_folder: String = "res://assets/" # Change to match your project structure
+@onready var voice_player: AudioStreamPlayer3D = $AudioStreamPlayer3D
+# Defines local positional offsets for blocks based on their placement order.
+# Assuming the block's origin is at its center, Y offsets start at 0.5.
+var blueprints: Dictionary = {
+	BuildStyle.TOWER: [
+		Vector3(0, 0.5, 0),     # 1st block (Bottom)
+		Vector3(0, 1.5, 0),     # 2nd block
+		Vector3(0, 2.5, 0),     # 3rd block
+		Vector3(0, 3.5, 0),     # 4th block
+		Vector3(0, 4.5, 0)      # 5th block (Top)
+	],
+	BuildStyle.PYRAMID: [
+		Vector3(-1.05, 0.5, 0), # Base Left (Slightly spread to avoid collision jitter)
+		Vector3(0, 0.5, 0),     # Base Center
+		Vector3(1.05, 0.5, 0),  # Base Right
+		Vector3(-0.525, 1.5, 0),# Mid Left
+		Vector3(0.525, 1.5, 0), # Mid Right
+		Vector3(0, 2.5, 0)      # Top
+	],
+	BuildStyle.WALL: [
+		Vector3(-1.05, 0.5, 0), Vector3(0, 0.5, 0), Vector3(1.05, 0.5, 0), # Bottom Row
+		Vector3(-1.05, 1.5, 0), Vector3(0, 1.5, 0), Vector3(1.05, 1.5, 0)  # Top Row
+	]
+}
+
 @onready var nav_agent: NavigationAgent3D = $NavigationAgent3D
+
 
 enum State { FINDING_BLOCK, MOVING_TO_BLOCK, MOVING_TO_ZONE, BUILDING, CELEBRATING, UPSET, CRYING }
 var current_state: State = State.FINDING_BLOCK
@@ -17,17 +51,47 @@ var max_tower_size: int = 0
 var state_timer: float = 0.0
 
 func _ready() -> void:
-	# 1. Activate Godot's built-in Crowd Avoidance
+# 1. Activate Godot's built-in Crowd Avoidance
 	nav_agent.velocity_computed.connect(_on_safe_velocity_computed)
 	nav_agent.avoidance_enabled = true
-	nav_agent.radius = 0.6 # The "personal space" bubble around the kid
+	nav_agent.radius = 0.6 
 	
-	# 2. Claim a station immediately
-	var zones = get_tree().get_nodes_in_group("build_zones")
-	if zones.size() > 0:
-		claimed_zone = zones.pick_random()
+	# 2. Wait for the KidManager to finish assigning styles
+	await get_tree().process_frame
+	await get_tree().process_frame
+	
+	# --- NEW: Wait in a loop until the player actually hits PLAY ---
+	while not GameManager.is_game_active:
+		await get_tree().process_frame
+	
+	# 3. Wait a random amount of time and announce
+	var random_delay: float = randf_range(1.0, 3.0)
+	await get_tree().create_timer(random_delay).timeout
+	announce_build()
+
+func handle_footsteps(delta: float) -> void:
+	# Only play footsteps if grounded and moving
+	if is_on_floor() and velocity.length() > 0.2:
+		footstep_timer -= delta
+		if footstep_timer <= 0.0:
+			footstep_player.pitch_scale = randf_range(0.9, 1.1)
+			footstep_player.play()
+			
+			# Speed up footsteps if chasing (For leader)
+			var current_interval = FOOTSTEP_INTERVAL
+			#if "chase_speed" in self and velocity.length() > (patrol_speed + 0.5):
+			#	current_interval = FOOTSTEP_INTERVAL * 0.6
+				
+			footstep_timer = current_interval
+	else:
+		footstep_timer = 0.0
 
 func _physics_process(delta: float) -> void:
+	if not GameManager.is_game_active:
+		if not is_on_floor():
+			velocity.y -= gravity * delta
+			move_and_slide()
+		return
 	# Calculate desired velocity
 	if not is_on_floor():
 		velocity.y -= gravity * delta
@@ -56,7 +120,12 @@ func _physics_process(delta: float) -> void:
 		nav_agent.set_velocity(velocity)
 	else:
 		_on_safe_velocity_computed(velocity)
-
+	handle_footsteps(delta)
+	
+	# Kids use _on_safe_velocity_computed for actual movement, but handle_footsteps 
+	# uses the velocity vector which is tracked accurately in both setups.
+	#if not "nav_agent" in self or not nav_agent.avoidance_enabled:
+		#move_and_slide()
 # --- NEW: Avoidance Movement Execution ---
 func _on_safe_velocity_computed(safe_velocity: Vector3) -> void:
 	velocity.x = safe_velocity.x
@@ -101,8 +170,12 @@ func check_if_all_blocks_placed() -> void:
 
 func is_block_in_build_zone(block: Node3D) -> bool:
 	var zones = get_tree().get_nodes_in_group("build_zones")
+	var block_pos_2d = Vector2(block.global_position.x, block.global_position.z)
+	
 	for zone in zones:
-		if block.global_position.distance_to(zone.global_position) < 2.5:
+		var zone_pos_2d = Vector2(zone.global_position.x, zone.global_position.z)
+		# 2D distance check ignores how high the tower gets
+		if block_pos_2d.distance_to(zone_pos_2d) < 2.5:
 			return true
 	return false
 
@@ -153,23 +226,51 @@ func check_if_block_reached() -> void:
 
 func check_if_zone_reached() -> void:
 	if claimed_zone:
-		if global_position.distance_to(claimed_zone.global_position) < 1.8:
+		# Increased stopping distance from 1.8 to 2.2
+		if global_position.distance_to(claimed_zone.global_position) < 2.2:
 			current_state = State.BUILDING
 
+#func build_tower() -> void:
+	## FIX: Immediately change state so this only runs ONCE per drop!
+	#current_state = State.FINDING_BLOCK
+	#
+	#if block_scene and claimed_zone:
+		#var new_block = block_scene.instantiate()
+		#get_parent().add_child(new_block)
+		#var random_offset = Vector3(randf_range(-0.2, 0.2), 2.0, randf_range(-0.2, 0.2))
+		#new_block.global_position = claimed_zone.global_position + random_offset
+		#
+	#await get_tree().create_timer(0.5).timeout
+	#if current_state == State.BUILDING: 
+		#current_state = State.FINDING_BLOCK
 func build_tower() -> void:
-	# FIX: Immediately change state so this only runs ONCE per drop!
 	current_state = State.FINDING_BLOCK
 	
 	if block_scene and claimed_zone:
+		var current_block_count = count_blocks_in_zone(claimed_zone)
+		var blueprint = blueprints[build_style]
+		
+		var placement_index = min(current_block_count, blueprint.size() - 1)
+		var target_offset = blueprint[placement_index]
+		
 		var new_block = block_scene.instantiate()
 		get_parent().add_child(new_block)
-		var random_offset = Vector3(randf_range(-0.2, 0.2), 2.0, randf_range(-0.2, 0.2))
-		new_block.global_position = claimed_zone.global_position + random_offset
+		
+		var final_offset = target_offset * block_size
+		var drop_height_fudge = Vector3(0, 0.25, 0)
+		new_block.global_position = claimed_zone.global_position + final_offset + drop_height_fudge
+		
+		if new_block is RigidBody3D:
+			new_block.rotation = Vector3.ZERO
+			new_block.linear_velocity = Vector3.ZERO
+			new_block.angular_velocity = Vector3.ZERO
+			
+			# NEW: Ignore collision between this specific kid and this specific block
+			add_collision_exception_with(new_block)
 		
 	await get_tree().create_timer(0.5).timeout
 	if current_state == State.BUILDING: 
 		current_state = State.FINDING_BLOCK
-
 # --- Post-Building Mechanics ---
 
 func start_celebrating() -> void:
@@ -179,9 +280,13 @@ func start_celebrating() -> void:
 func count_blocks_in_zone(zone: Node3D) -> int:
 	var count = 0
 	if not zone: return 0
+	
+	var zone_pos_2d = Vector2(zone.global_position.x, zone.global_position.z)
+	
 	for b in get_tree().get_nodes_in_group("BLOCKS"):
 		if is_instance_valid(b):
-			if b.global_position.distance_to(zone.global_position) < 2.5:
+			var block_pos_2d = Vector2(b.global_position.x, b.global_position.z)
+			if block_pos_2d.distance_to(zone_pos_2d) < 2.5:
 				count += 1
 	return count
 
@@ -230,6 +335,31 @@ func start_crying() -> void:
 	velocity.x = 0
 	velocity.z = 0
 	get_tree().call_group("teacher", "investigate_crying", global_position)
+	play_audio("cry", true)
 
 func crying_behavior(_delta: float) -> void:
 	rotation.z = sin(Time.get_ticks_msec() * 0.03) * 0.2
+	
+func announce_build() -> void:
+	# Converts the enum (e.g., TOWER) to the string "build_tower"
+	var style_name: String = BuildStyle.keys()[build_style].to_lower()
+	play_audio("build_" + style_name, false)
+
+func play_audio(file_name: String, loop: bool = false) -> void:
+	# Abort if audio is playing, UNLESS we are trying to play the cry sound
+	if voice_player.is_playing() and file_name != "cry":
+		return
+		
+	var audio_path: String = audio_folder + file_name + ".mp3"
+	
+	if ResourceLoader.exists(audio_path):
+		var stream: AudioStream = load(audio_path)
+		
+		# Godot 4 explicitly allows enabling MP3 loops via code
+		if stream is AudioStreamMP3:
+			stream.loop = loop
+			
+		voice_player.stream = stream
+		voice_player.play()
+	else:
+		push_warning("KidAI: Audio file not found at path: " + audio_path)

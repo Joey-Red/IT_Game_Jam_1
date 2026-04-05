@@ -1,9 +1,11 @@
 [gd_scene format=3 uid="uid://bww1b58hea0eo"]
 
 [ext_resource type="PackedScene" uid="uid://cdrao483x32dt" path="res://Player.tscn" id="1_glv2v"]
+[ext_resource type="Script" uid="uid://lok6q5iuy5t5" path="res://directional_light_3d.gd" id="1_lgr22"]
 [ext_resource type="PackedScene" uid="uid://bwprnvkmw72g8" path="res://block.tscn" id="2_uu6xs"]
 [ext_resource type="PackedScene" uid="uid://b46tkxegbn22r" path="res://room.tscn" id="5_fos0i"]
 [ext_resource type="PackedScene" uid="uid://i87s8grrcr3b" path="res://kid_ai.tscn" id="6_3dxm6"]
+[ext_resource type="Script" uid="uid://bw6p2i15jr8wd" path="res://kid_manager.gd" id="6_lgr22"]
 [ext_resource type="PackedScene" uid="uid://ddfropcisjpj7" path="res://leader_ai.tscn" id="7_lgr22"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_glv2v"]
@@ -25,58 +27,66 @@ environment = SubResource("Environment_r0du0")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=875955055]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+script = ExtResource("1_lgr22")
+chase_color = Color(0.094720505, 4.8506774e-08, 6.016344e-09, 1)
 
 [node name="Map" type="Node" parent="." unique_id=270111185]
 
 [node name="Player" parent="." unique_id=1501985437 instance=ExtResource("1_glv2v")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.154715, 1.1995444, 2.066218)
+transform = Transform3D(0.9659258, 0, 0.25881904, 0, 1, 0, -0.25881904, 0, 0.9659258, -10.138174, 0.936362, 10.880438)
 
 [node name="Blocks" type="Node" parent="." unique_id=77482244]
 
 [node name="Block" parent="Blocks" unique_id=456510000 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.279681, 0.32128918, 5.302891)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12.071398, 0.32128918, -2.4193113)
 
 [node name="Block2" parent="Blocks" unique_id=450041289 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.127048, 0.32827806, 5.277425)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.918764, 0.32827806, -2.4447773)
 
 [node name="Block7" parent="Blocks" unique_id=876264100 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(0.6742379, 0, 0.7385142, 0, 1, 0, -0.7385142, 0, 0.6742379, -11.127048, 0.5779806, 5.277425)
+transform = Transform3D(0.6742379, 0, 0.7385142, 0, 1, 0, -0.7385142, 0, 0.6742379, -10.918764, 0.5779806, -2.4447773)
 
 [node name="Block8" parent="Blocks" unique_id=1850813813 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(0.6742379, 0, 0.7385142, 0, 1, 0, -0.7385142, 0, 0.6742379, -12.294208, 0.5776612, 5.277425)
+transform = Transform3D(0.6742379, 0, 0.7385142, 0, 1, 0, -0.7385142, 0, 0.6742379, -12.085924, 0.5776612, -2.4447773)
 
 [node name="Block9" parent="Blocks" unique_id=1128853174 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(0.95301104, 0, 0.30293545, 0, 1, 0, -0.30293545, 0, 0.95301104, -12.294208, 0.823918, 5.277425)
+transform = Transform3D(0.95301104, 0, 0.30293545, 0, 1, 0, -0.30293545, 0, 0.95301104, -12.085924, 0.823918, -2.4447773)
 
 [node name="Block3" parent="Blocks" unique_id=1584094510 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.887354, 0.32955348, 6.12014)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.67907, 0.32955348, -1.602062)
 
 [node name="Block4" parent="Blocks" unique_id=301595248 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(0.42141572, 0, -0.90686756, 0, 1, 0, 0.90686756, 0, 0.42141572, -11.887354, 0.5831362, 6.12014)
+transform = Transform3D(0.42141572, 0, -0.90686756, 0, 1, 0, 0.90686756, 0, 0.42141572, -11.67907, 0.5831362, -1.602062)
 
 [node name="Block5" parent="Blocks" unique_id=1454997373 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(0.1787507, 0, 0.9838944, 0, 1, 0, -0.9838944, 0, 0.1787507, -11.887354, 0.8391049, 6.12014)
+transform = Transform3D(0.1787507, 0, 0.9838944, 0, 1, 0, -0.9838944, 0, 0.1787507, -11.67907, 0.8391049, -1.602062)
 
 [node name="Block6" parent="Blocks" unique_id=830373806 instance=ExtResource("2_uu6xs")]
-transform = Transform3D(0.87639076, 0, 0.4816007, 0, 1, 0, -0.4816007, 0, 0.87639076, -11.887354, 1.0997474, 6.12014)
+transform = Transform3D(0.87639076, 0, 0.4816007, 0, 1, 0, -0.4816007, 0, 0.87639076, -11.67907, 1.0997474, -1.602062)
+
+[node name="Block10" parent="Blocks" unique_id=1569808584 instance=ExtResource("2_uu6xs")]
+transform = Transform3D(0.7796988, 0, 0.62615484, 0, 1, 0, -0.62615484, 0, 0.7796988, -11.67907, 1.3497473, -1.602062)
 
 [node name="BuildZones" type="Node" parent="." unique_id=1493152726]
 
 [node name="BuildZone2" type="Marker3D" parent="BuildZones" unique_id=1460592652 groups=["build_zones"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9.92004, 0.5347916, 2.7450247)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.5538926, 0.5347916, 2.7374485)
 
 [node name="BuildZone3" type="Marker3D" parent="BuildZones" unique_id=1392154332 groups=["build_zones"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.142622, 0.5347916, 3.7373996)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.9071517, 0.5347916, -1.4649868)
 
 [node name="AI_KIDS" type="Node" parent="." unique_id=534920871]
 
 [node name="KidAI" parent="AI_KIDS" unique_id=2049064512 instance=ExtResource("6_3dxm6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.8083324, 1.1995444, 4.2777624)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.30598, 1.1995444, 6.063704)
 
 [node name="KidAI3" parent="AI_KIDS" unique_id=1675625798 instance=ExtResource("6_3dxm6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.869255, 1.1995445, 1.7736683)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2245965, 1.1995445, -0.99321675)
 
 [node name="LeaderAI" parent="." unique_id=1629065869 instance=ExtResource("7_lgr22")]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 1.8725176, 1.0393022, -1.6595793)
+transform = Transform3D(0.49999997, 0, 0.8660254, 0, 1, 0, -0.8660254, 0, 0.49999997, -8.334407, 1.0393022, 5.108355)
 
 [node name="Room" parent="." unique_id=1411896095 instance=ExtResource("5_fos0i")]
+
+[node name="KidManager" type="Node" parent="." unique_id=797479466]
+script = ExtResource("6_lgr22")
